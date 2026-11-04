@@ -6,72 +6,107 @@
 <title>Ресурсы бота</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+  :root { --u: min(100vw, 480px); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; background: #0b0b12; color: #fff;
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+  html, body { margin: 0; height: 100%; overflow: hidden;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
 
-  .bg { position: fixed; inset: 0; z-index: -2;
-    background: radial-gradient(circle at 20% 10%, #3b1d6e 0%, transparent 50%),
-                radial-gradient(circle at 80% 90%, #0e4f6b 0%, transparent 50%), #0b0b12; }
-  video.bg-video { position: fixed; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: -2; }
-  .shade { position: fixed; inset: 0; z-index: -1; background: rgba(5,5,12,.55); }
+  /* фон: фиолетовое сукно */
+  body { background: radial-gradient(120% 70% at 50% 0%, #3a1852 0%, #1e0e29 55%, #130a1b 100%); }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .35;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6  0 0 0 0 .4  0 0 0 0 .7  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 
-  .wrap { height: 100%; display: flex; flex-direction: column; align-items: center;
-    padding: calc(env(safe-area-inset-top, 0px) + 40px) 20px 30px; }
-  h1 { font-size: 26px; font-weight: 700; letter-spacing: .5px; margin: 0 0 28px;
-    text-shadow: 0 2px 20px rgba(0,0,0,.6); }
-  .stack { width: 100%; max-width: 420px; display: flex; flex-direction: column;
-    gap: 14px; margin: auto 0; }
+  /* фишки и карты внизу */
+  .decor-bottom { position: fixed; left: 50%; bottom: 0; width: var(--u); transform: translateX(-50%);
+    aspect-ratio: 704 / 353; background: url("decor-bottom.jpg") center / cover no-repeat;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 24%); }
 
-  .btn { display: flex; align-items: center; justify-content: center; text-align: center;
-    border: 1px solid rgba(255,255,255,.18); border-radius: 18px; color: #fff;
-    font-weight: 600; cursor: pointer;
-    background: rgba(255,255,255,.08); backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px); transition: transform .15s, background .15s; }
-  .btn:active { transform: scale(.96); background: rgba(255,255,255,.16); }
+  .wrap { position: relative; height: 100%; width: var(--u); margin: 0 auto; display: flex;
+    flex-direction: column; align-items: center;
+    padding: calc(env(safe-area-inset-top, 0px) + var(--u) * .12) 0 calc(var(--u) * .5); }
 
-  .main { height: 84px; font-size: 20px;
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4); border: none;
-    box-shadow: 0 8px 30px rgba(139,92,246,.45); }
-  .row { display: flex; gap: 14px; }
-  .row .btn { flex: 1; height: 64px; font-size: 15px; padding: 0 8px; }
-  .music { height: 60px; font-size: 16px; }
+  /* розовое золото */
+  .gold { background: linear-gradient(180deg, #f7d9cf 0%, #d9a59c 48%, #b27a7c 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,.55)); }
+
+  h1 { margin: 0; font-size: calc(var(--u) * .075); font-weight: 800; letter-spacing: .01em; text-align: center; }
+
+  .stack { width: 89%; margin-top: auto; display: flex; flex-direction: column; gap: calc(var(--u) * .042); }
+  .main-wrap { position: relative; }
+  .ornament { position: absolute; left: 50%; bottom: 60%; width: 66%; transform: translateX(-50%);
+    aspect-ratio: 464 / 156; background: url("decor-ornament.jpg") center / cover no-repeat; opacity: .85; z-index: -1;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 100%, #000 45%, transparent 78%);
+            mask-image: radial-gradient(ellipse at 50% 100%, #000 45%, transparent 78%); }
+  .row { display: flex; gap: calc(var(--u) * .042); }
+
+  .btn { position: relative; flex: 1; display: flex; align-items: center; justify-content: center;
+    text-align: center; cursor: pointer; user-select: none;
+    border: calc(var(--u) * .011) solid transparent; border-radius: calc(var(--u) * .05);
+    background:
+      linear-gradient(180deg, #47295f 0%, #2b1639 100%) padding-box,
+      linear-gradient(155deg, #f4cfc5 0%, #b9808a 30%, #7c4c5e 52%, #d6a198 78%, #f6d6cc 100%) border-box;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.4), inset 0 8px 16px rgba(0,0,0,.45),
+                0 8px 16px rgba(0,0,0,.55);
+    transition: transform .12s ease, filter .12s ease; }
+  .btn:active { transform: scale(.97); filter: brightness(1.18); }
+  .btn span { font-weight: 700; padding: 0 8px; }
+
+  .main { height: calc(var(--u) * .205);
+    background:
+      linear-gradient(135deg, #1d1032 0%, #0f3c42 55%, #2c1237 100%) padding-box,
+      linear-gradient(155deg, #f4cfc5 0%, #b9808a 30%, #7c4c5e 52%, #d6a198 78%, #f6d6cc 100%) border-box; }
+  .main span { font-size: calc(var(--u) * .052); }
+  .half { height: calc(var(--u) * .158); }
+  .half span { font-size: calc(var(--u) * .04); }
+  .music { height: calc(var(--u) * .158); }
+  .music span { font-size: calc(var(--u) * .044); }
+
+  .btn:focus-visible { outline: 2px solid #f6d6cc; outline-offset: 3px; }
 </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <video class="bg-video" autoplay muted loop playsinline src="bg.mp4"
-         onerror="this.remove()"></video>
-  <div class="shade"></div>
+  <div class="decor-bottom"></div>
 
   <div class="wrap">
-    <h1>Ресурсы бота:</h1>
+    <h1 class="gold">Ресурсы бота:</h1>
+
     <div class="stack">
-      <div class="btn main" data-type="ext" data-url="https://shuffle.vip?r=wc4omO8oy5">🎰 Tier 1 casino Shuffle</div>
-      <div class="row">
-        <div class="btn" data-type="tg" data-url="https://t.me/rovelcommunity">📢 Канал Rovel'я</div>
-        <div class="btn" data-type="tg" data-url="https://t.me/rovelcommunitychat">💬 Чат Rovel'я</div>
+      <div class="main-wrap">
+        <div class="ornament"></div>
+        <div class="btn main" tabindex="0" role="link" data-type="ext" data-url="SHUFFLE"><span class="gold">🎰 Tier 1 casino Shuffle</span></div>
       </div>
-      <div class="btn music" data-type="page" data-url="player.html">🎧 relax music for game</div>
+
+      <div class="row">
+        <div class="btn half" tabindex="0" role="link" data-type="tg" data-url="https://t.me/rovelcommunity"><span class="gold">📢 Канал Rovel'я</span></div>
+        <div class="btn half" tabindex="0" role="link" data-type="tg" data-url="https://t.me/rovelcommunitychat"><span class="gold">💬 Чат Rovel'я</span></div>
+      </div>
+
+      <div class="btn music" tabindex="0" role="link" data-type="page" data-url="player.html"><span class="gold">🎧 relax music for game</span></div>
     </div>
   </div>
 
 <script>
+  const SHUFFLE_URL = "https://shuffle.vip?r=wc4omO8oy5";
+
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
-  tg.setHeaderColor("#0b0b12");
-  tg.setBackgroundColor("#0b0b12");
+  tg.setHeaderColor("#2a1236");
+  tg.setBackgroundColor("#1e0e29");
 
   document.querySelectorAll(".btn").forEach(el => {
-    el.addEventListener("click", () => {
+    const go = () => {
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-      const url = el.dataset.url, type = el.dataset.type;
+      const type = el.dataset.type;
+      const url = el.dataset.url === "SHUFFLE" ? SHUFFLE_URL : el.dataset.url;
       if (type === "tg") tg.openTelegramLink(url);
       else if (type === "ext") tg.openLink(url);
       else location.href = url;
-    });
+    };
+    el.addEventListener("click", go);
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") go(); });
   });
 </script>
 </body>
