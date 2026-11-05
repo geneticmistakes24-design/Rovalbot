@@ -1,1 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Новости игровой сферы</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --u: min(100vw, 480px); --font: "Oswald", "Bebas Neue", "Arial Narrow", sans-serif; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; background: #150a20; color: #efe6f7;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
 
+  .bg { position: fixed; inset: 0; overflow: hidden; z-index: 0;
+    background: linear-gradient(180deg, #24132f 0%, #170c23 45%, #150a20 100%); }
+  .bg i { position: absolute; border-radius: 50%; display: block; }
+  .b1 { left: 38%; top: -6%; width: 48vmin; height: 36vmin; filter: blur(14px);
+    background: radial-gradient(circle, rgba(140,20,200,.55), transparent 68%); }
+  .b2 { left: -12%; top: 40%; width: 52vmin; height: 40vmin; filter: blur(16px);
+    background: radial-gradient(circle, rgba(120,18,170,.45), transparent 68%); }
+  .b3 { right: -14%; bottom: 8%; width: 46vmin; height: 46vmin; filter: blur(14px);
+    background: radial-gradient(circle, rgba(205,150,80,.30), transparent 68%); }
+
+  .wrap { position: relative; z-index: 1; width: var(--u); margin: 0 auto;
+    padding: calc(env(safe-area-inset-top, 0px) + 22px) 16px calc(env(safe-area-inset-bottom, 0px) + 30px); }
+
+  .gold { background: linear-gradient(180deg, #f8e6b8 0%, #dcb56f 50%, #a07440 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  header { text-align: center; margin-bottom: 18px; }
+  h1 { margin: 0; font-family: var(--font); font-weight: 600; font-size: clamp(26px, calc(var(--u) * .085), 38px); line-height: 1.1;
+    filter: drop-shadow(0 0 10px rgba(232,170,80,.45)) drop-shadow(0 2px 2px rgba(0,0,0,.7)); }
+  .upd { margin-top: 8px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: #bfa9d6; }
+  .rule { height: 2px; margin: 14px auto 0; width: 70%; border-radius: 2px;
+    background: linear-gradient(90deg, transparent, #c970ff, #e8c27a, #c970ff, transparent); }
+
+  .feed { display: flex; flex-direction: column; gap: 14px; }
+
+  .card { position: relative; padding: 14px 16px 16px 18px; border-radius: 18px; overflow: hidden;
+    background: linear-gradient(165deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 35%, rgba(18,10,28,.65) 100%);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border: 1px solid rgba(201,112,255,.28);
+    box-shadow: 0 0 18px rgba(170,80,255,.18), 0 8px 18px rgba(0,0,0,.4);
+    opacity: 0; animation: rise .45s ease forwards; }
+  .card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, #c970ff, #e8c27a); }
+  .card.hero { padding: 18px 18px 20px 20px; border-color: rgba(232,194,122,.45); }
+
+  .meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  .tag { padding: 3px 9px; border-radius: 999px; color: #f3dcae; background: rgba(201,112,255,.22); border: 1px solid rgba(201,112,255,.4); }
+  .date { color: #bfa9d6; }
+  .date.fresh { color: #f3dcae; font-weight: 700; }
+
+  .title { margin: 0 0 8px; font-family: var(--font); font-weight: 600; font-size: 20px; line-height: 1.2; color: #fff; }
+  .hero .title { font-size: 26px; }
+  .text { margin: 0; font-size: 15px; line-height: 1.5; color: #dccfe9; white-space: pre-line; }
+
+  .more { display: inline-block; margin-top: 12px; padding: 8px 16px; border-radius: 999px; cursor: pointer; user-select: none;
+    font-family: var(--font); font-weight: 600; font-size: 14px; letter-spacing: .03em; color: #2a1236;
+    background: linear-gradient(180deg, #f8e6b8, #d9ab62); box-shadow: 0 0 12px rgba(232,170,80,.35); }
+  .more:active { filter: brightness(1.15); transform: scale(.97); }
+
+  .state { text-align: center; padding: 40px 10px; color: #bfa9d6; font-size: 15px; }
+  .foot { margin-top: 22px; text-align: center; font-size: 12px; color: #8f7aa8; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .card { animation: none; opacity: 1; } }
+</style>
+</head>
+<body>
+  <div class="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+
+  <div class="wrap">
+    <header>
+      <h1 class="gold">Новости игровой сферы</h1>
+      <div class="upd" id="upd"></div>
+      <div class="rule"></div>
+    </header>
+
+    <div class="feed" id="feed"><div class="state">Загружаю новости…</div></div>
+    <div class="foot">Подборка обновляется раз в сутки</div>
+  </div>
+
+<script>
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    tg.ready(); tg.expand();
+    tg.setHeaderColor("#1c0f2a"); tg.setBackgroundColor("#150a20");
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => { location.href = "index.html"; });
+  }
+
+  const feed = document.getElementById("feed");
+
+  function dayLabel(str) {
+    const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(str || "");
+    if (!m) return { text: str || "", fresh: false };
+    const d = new Date(+m[3], +m[2] - 1, +m[1]);
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    const diff = Math.round((t - d) / 86400000);
+    if (diff === 0) return { text: "Сегодня", fresh: true };
+    if (diff === 1) return { text: "Вчера", fresh: false };
+    return { text: str, fresh: false };
+  }
+
+  function parse(raw) {
+    return raw.replace(/\r/g, "").split(/\n\s*---\s*(?:\n|$)/).map(b => b.trim()).filter(Boolean).map(b => {
+      const lines = b.split("\n").map(l => l.trim());
+      let link = "";
+      const li = lines.findIndex(l => /^link:/i.test(l));
+      if (li > -1) { link = lines[li].replace(/^link:\s*/i, "").trim(); lines.splice(li, 1); }
+      const meta = (lines.shift() || "").split("|").map(s => s.trim());
+      const title = lines.shift() || "";
+      return { date: meta[0] || "", tag: meta[1] || "", title, text: lines.join("\n").trim(), link };
+    });
+  }
+
+  function openLink(url) {
+    if (!/^https?:\/\//i.test(url)) return;
+    if (tg) { /^https?:\/\/t\.me\//i.test(url) ? tg.openTelegramLink(url) : tg.openLink(url); }
+    else window.open(url, "_blank");
+  }
+
+  function render(items) {
+    feed.innerHTML = "";
+    if (!items.length) { feed.innerHTML = '<div class="state">Новостей пока нет</div>'; return; }
+    document.getElementById("upd").textContent = "Обновлено: " + dayLabel(items[0].date).text.toLowerCase();
+
+    items.forEach((n, i) => {
+      const card = document.createElement("article");
+      card.className = "card" + (i === 0 ? " hero" : "");
+      card.style.animationDelay = (i * 0.06) + "s";
+
+      const meta = document.createElement("div"); meta.className = "meta";
+      if (n.tag) { const t = document.createElement("span"); t.className = "tag"; t.textContent = n.tag; meta.appendChild(t); }
+      const dl = dayLabel(n.date);
+      const d = document.createElement("span"); d.className = "date" + (dl.fresh ? " fresh" : ""); d.textContent = dl.text; meta.appendChild(d);
+      card.appendChild(meta);
+
+      const h = document.createElement("h2"); h.className = "title"; h.textContent = n.title; card.appendChild(h);
+      if (n.text) { const p = document.createElement("p"); p.className = "text"; p.textContent = n.text; card.appendChild(p); }
+      if (n.link) {
+        const a = document.createElement("div"); a.className = "more"; a.setAttribute("role", "link"); a.tabIndex = 0;
+        a.textContent = "Читать полностью";
+        a.addEventListener("click", () => { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); openLink(n.link); });
+        card.appendChild(a);
+      }
+      feed.appendChild(card);
+    });
+  }
+
+  fetch("news.txt?t=" + Date.now(), { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(txt => render(parse(txt)))
+    .catch(() => { feed.innerHTML = '<div class="state">Не удалось загрузить новости.<br>Попробуй зайти позже.</div>'; });
+</script>
+</body>
+</html>
