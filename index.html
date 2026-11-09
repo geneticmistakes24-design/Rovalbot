@@ -66,7 +66,7 @@
     filter: drop-shadow(0 0 10px rgba(232,170,80,.45)) drop-shadow(0 2px 2px rgba(0,0,0,.7)); }
 
   .stack { width: 89%; margin: auto 0; padding-top: calc(var(--u) * .05); display: flex; flex-direction: column; gap: calc(var(--u) * .045); }
-  .row { display: flex; gap: calc(var(--u) * .045); }
+  .row { display: flex; gap: calc(var(--u) * .03); }
   .row .btn { flex: 1 1 0; }
 
   .btn { --bw: max(1.5px, calc(var(--u) * .004));
@@ -87,6 +87,7 @@
   .btn:active { transform: scale(.97); filter: brightness(1.2); }
   .btn:focus-visible { outline: 2px solid #e8c27a; outline-offset: 3px; }
   .btn:nth-child(2), .row .btn:first-child { animation-delay: .08s; }
+  .row .btn.buy { animation-delay: .11s; }
   .row .btn:last-child { animation-delay: .14s; }
   .music { animation-delay: .2s; }
   @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -102,8 +103,11 @@
   .main span { font-size: calc(var(--u) * .062); }
 
   .half { height: calc(var(--u) * .27); flex-direction: column; gap: calc(var(--u) * .02); }
-  .half svg { width: calc(var(--u) * .095); height: calc(var(--u) * .095); }
-  .half span { font-size: calc(var(--u) * .055); padding: 0 4px; }
+  .half svg { width: calc(var(--u) * .085); height: calc(var(--u) * .085); }
+  .half span { font-size: calc(var(--u) * .05); line-height: 1.08; padding: 0 2px; }
+  .row .btn.buy { flex: 1.18 1 0;
+    background: linear-gradient(165deg, rgba(232,194,122,.30) 0%, rgba(150,70,200,.30) 55%, rgba(18,10,28,.62) 100%);
+    box-shadow: 0 0 calc(var(--u) * .05) rgba(232,170,80,.45), inset 0 0 calc(var(--u) * .05) rgba(232,170,80,.14), 0 10px 22px rgba(0,0,0,.45); }
 
   .music { height: calc(var(--u) * .095); border-radius: calc(var(--u) * .04); }
   .music svg { width: calc(var(--u) * .055); height: calc(var(--u) * .055); }
@@ -132,11 +136,15 @@
       <div class="row">
         <div class="btn half" tabindex="0" role="link" data-type="tg" data-url="https://t.me/rovelcommunity">
           <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-          <span class="gold">Канал Rovel’я</span>
+          <span class="gold">Канал<br>Rovel’я</span>
+        </div>
+        <div class="btn half buy" tabindex="0" role="link" data-type="page" data-url="pay.html">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M3 4h2.5l2.2 11h10.6l2-8H6.4"/></svg>
+          <span class="gold">BUY<br>CLAIMER</span>
         </div>
         <div class="btn half" tabindex="0" role="link" data-type="tg" data-url="https://t.me/rovelcommunitychat">
           <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.5A8 8 0 1 1 21 12z"/></svg>
-          <span class="gold">Чат Rovel’я</span>
+          <span class="gold">Чат<br>Rovel’я</span>
         </div>
       </div>
 
