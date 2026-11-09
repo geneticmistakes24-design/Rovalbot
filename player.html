@@ -15,34 +15,72 @@
                 radial-gradient(circle at 80% 90%, #0e4f6b 0%, transparent 50%), #0b0b12; }
   video.bg-video { position: fixed; inset: 0; width: 100%; height: 100%;
     object-fit: cover; z-index: -2; }
-  .shade { position: fixed; inset: 0; z-index: -1; background: rgba(5,5,12,.6); }
+  /* затемнение сделано слабее, чтобы видео было лучше видно */
+  .shade { position: fixed; inset: 0; z-index: -1; background: rgba(5,5,12,.22); }
 
   .wrap { min-height: 100%; max-width: 440px; margin: 0 auto;
-    padding: calc(env(safe-area-inset-top, 0px) + 24px) 20px 30px; }
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 30px; }
 
-  .cover { width: 100%; aspect-ratio: 1; border-radius: 24px; object-fit: cover;
-    background: rgba(255,255,255,.08); box-shadow: 0 20px 50px rgba(0,0,0,.5); display: block; }
-  .title { font-size: 22px; font-weight: 700; margin: 20px 0 4px; }
-  .artist { font-size: 15px; opacity: .65; margin: 0 0 18px; }
+  /* ===== КОМПАКТНЫЙ ПЛЕЕР ===== */
+  .player { padding: 12px; border-radius: 22px;
+    background: rgba(12,8,28,.45); border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  .now { display: flex; align-items: center; gap: 14px; }
+  .cover { width: 84px; height: 84px; flex: 0 0 84px; border-radius: 16px; object-fit: cover;
+    background: rgba(255,255,255,.08); box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    border: 1px solid rgba(255,255,255,.15); }
+  .meta { min-width: 0; }
+  .title { font-size: 18px; font-weight: 700; margin: 0 0 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .artist { font-size: 13px; opacity: .65; margin: 0; }
 
-  input[type=range] { width: 100%; accent-color: #8b5cf6; margin: 0; }
-  .times { display: flex; justify-content: space-between; font-size: 12px; opacity: .6; margin-top: 4px; }
+  .seekrow { margin-top: 12px; }
+  input[type=range] { width: 100%; accent-color: #a78bfa; margin: 0; }
+  .times { display: flex; justify-content: space-between; font-size: 11px; opacity: .6; margin-top: 2px; }
 
-  .controls { display: flex; align-items: center; justify-content: center; gap: 28px; margin: 18px 0 26px; }
-  .cbtn { width: 56px; height: 56px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
+  .controls { display: flex; align-items: center; justify-content: center; gap: 22px; margin: 8px 0 2px; }
+  .cbtn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
     background: rgba(255,255,255,.08); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    color: #fff; font-size: 20px; cursor: pointer; transition: transform .15s; }
+    color: #fff; font-size: 17px; cursor: pointer; transition: transform .15s; }
   .cbtn:active { transform: scale(.92); }
-  .cbtn.play { width: 72px; height: 72px; font-size: 28px; border: none;
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 8px 30px rgba(139,92,246,.45); }
+  .cbtn.play { width: 60px; height: 60px; font-size: 24px; border: none;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 8px 26px rgba(139,92,246,.5); }
 
-  .list { display: flex; flex-direction: column; gap: 8px; }
+  /* ===== КНОПКИ-КАТЕГОРИИ (листаются вбок) ===== */
+  .sectionTitle { font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    opacity: .7; margin: 20px 4px 8px; }
+  .tabs { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 4px 2px 12px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 0 0 auto; scroll-snap-align: center; display: flex; align-items: center; gap: 9px;
+    padding: 13px 18px; border-radius: 18px; color: #fff; font: inherit; font-size: 14px; font-weight: 600;
+    white-space: nowrap; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.07);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; }
+  .tab .ic { font-size: 18px; }
+  .tab:active { transform: scale(.96); }
+  .tab.active { border-color: rgba(250,204,21,.8);
+    background: linear-gradient(135deg, rgba(139,92,246,.85), rgba(6,182,212,.7));
+    box-shadow: 0 0 0 1px rgba(250,204,21,.35), 0 8px 28px rgba(139,92,246,.55), 0 0 22px rgba(168,85,247,.45); }
+
+  /* ===== СПИСОК ТРЕКОВ ===== */
+  .list { display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+  .list.slideL { animation: slideL .28s ease; }
+  .list.slideR { animation: slideR .28s ease; }
+  @keyframes slideL { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  @keyframes slideR { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
   .item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 14px;
-    background: rgba(255,255,255,.06); cursor: pointer; }
-  .item.active { background: rgba(139,92,246,.3); }
+    background: rgba(12,8,28,.45); border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; }
+  .item.active { background: rgba(139,92,246,.4); border-color: rgba(250,204,21,.5); }
   .item img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
   .item b { display: block; font-size: 14px; }
   .item span { font-size: 12px; opacity: .6; }
+  .empty { text-align: center; opacity: .6; padding: 30px 0; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -52,32 +90,53 @@
   <div class="shade"></div>
 
   <div class="wrap">
-    <img id="cover" class="cover" alt="">
-    <div id="title" class="title"></div>
-    <div id="artist" class="artist"></div>
+    <div class="player">
+      <div class="now">
+        <img id="cover" class="cover" alt="">
+        <div class="meta">
+          <div id="title" class="title"></div>
+          <div id="artist" class="artist"></div>
+        </div>
+      </div>
 
-    <input id="seek" type="range" min="0" max="100" value="0" step="0.1">
-    <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+      <div class="seekrow">
+        <input id="seek" type="range" min="0" max="100" value="0" step="0.1">
+        <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+      </div>
 
-    <div class="controls">
-      <button class="cbtn" id="prev">⏮</button>
-      <button class="cbtn play" id="play">▶</button>
-      <button class="cbtn" id="next">⏭</button>
+      <div class="controls">
+        <button class="cbtn" id="prev">⏮</button>
+        <button class="cbtn play" id="play">▶</button>
+        <button class="cbtn" id="next">⏭</button>
+      </div>
     </div>
 
+    <div class="sectionTitle">Плейлисты</div>
+    <div class="tabs" id="tabs"></div>
     <div class="list" id="list"></div>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
 
 <script>
+  // === КАТЕГОРИИ ===
+  const CATS = [
+    { id: "kayf", icon: "🔥", name: "Музыка для кайфа под крутку" },
+    { id: "sad",  icon: "🌧️", name: "Музыка погрустить" },
+    { id: "new",  icon: "⚡", name: "Музыка новой школы" },
+    { id: "psy",  icon: "🤪", name: "Музыка для психов" }
+  ];
+  const ALL = ["kayf", "sad", "new", "psy"];
+
   // === ТВОИ ТРЕКИ ===
+  // cats — в каких категориях трек показывается. Оставь нужные из: "kayf", "sad", "new", "psy"
+  // Сейчас все треки стоят во всех категориях — просто убери лишнее.
   const TRACKS = [
-    { title: "Brutal City", artist: "Deep", src: "music/brutalcitydeep.mp3", cover: "covers/brutalcitydeep.jpg" },
-    { title: "Stronghold", artist: "Deep", src: "music/strongholddeep.mp3", cover: "covers/strongholddeep.jpg" },
-    { title: "Ghost", artist: "Deep", src: "music/ghostdeep.mp3", cover: "covers/ghostdeep.jpg" },
-    { title: "God Bless", artist: "Deep", src: "music/godblessdeep.mp3", cover: "covers/godblessdeep.jpg" },
-    { title: "Casablanca", artist: "Deep", src: "music/castablanca.mp3", cover: "covers/castablanca.jpg" }
+    { title: "Brutal City", artist: "Deep", src: "music/brutalcitydeep.mp3", cover: "covers/brutalcitydeep.jpg", cats: ALL },
+    { title: "Stronghold", artist: "Deep", src: "music/strongholddeep.mp3", cover: "covers/strongholddeep.jpg", cats: ALL },
+    { title: "Ghost", artist: "Deep", src: "music/ghostdeep.mp3", cover: "covers/ghostdeep.jpg", cats: ALL },
+    { title: "God Bless", artist: "Deep", src: "music/godblessdeep.mp3", cover: "covers/godblessdeep.jpg", cats: ALL },
+    { title: "Casablanca", artist: "Deep", src: "music/castablanca.mp3", cover: "covers/castablanca.jpg", cats: ALL }
   ];
 
   const tg = window.Telegram.WebApp;
@@ -88,24 +147,57 @@
 
   const $ = id => document.getElementById(id);
   const audio = $("audio"), seek = $("seek"), playBtn = $("play");
-  let i = 0;
+  let g = 0;      // индекс играющего трека в TRACKS
+  let cat = 0;    // выбранная категория
 
   const fmt = s => isNaN(s) ? "0:00" : Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
-  function renderList() {
-    $("list").innerHTML = "";
-    TRACKS.forEach((t, idx) => {
+  // индексы треков текущей категории
+  const queue = () => TRACKS.map((t, idx) => idx).filter(idx => TRACKS[idx].cats.includes(CATS[cat].id));
+
+  function renderTabs() {
+    $("tabs").innerHTML = "";
+    CATS.forEach((c, idx) => {
+      const b = document.createElement("button");
+      b.className = "tab" + (idx === cat ? " active" : "");
+      b.innerHTML = `<span class="ic">${c.icon}</span><span>${c.name}</span>`;
+      b.onclick = () => setCat(idx);
+      $("tabs").appendChild(b);
+    });
+    const act = $("tabs").children[cat];
+    if (act) act.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }
+
+  function renderList(dir) {
+    const list = $("list");
+    list.innerHTML = "";
+    const q = queue();
+    if (!q.length) {
+      list.innerHTML = '<div class="empty">Тут пока пусто 🎧</div>';
+    }
+    q.forEach(idx => {
+      const t = TRACKS[idx];
       const el = document.createElement("div");
-      el.className = "item" + (idx === i ? " active" : "");
+      el.className = "item" + (idx === g ? " active" : "");
       el.innerHTML = `<img src="${t.cover}" alt=""><div><b>${t.title}</b><span>${t.artist}</span></div>`;
       el.onclick = () => load(idx, true);
-      $("list").appendChild(el);
+      list.appendChild(el);
     });
+    list.classList.remove("slideL", "slideR");
+    if (dir) { void list.offsetWidth; list.classList.add(dir > 0 ? "slideL" : "slideR"); }
+  }
+
+  function setCat(idx) {
+    if (idx < 0 || idx >= CATS.length || idx === cat) return;
+    const dir = idx > cat ? 1 : -1;
+    cat = idx;
+    renderTabs();
+    renderList(dir);
   }
 
   function load(idx, autoplay) {
-    i = (idx + TRACKS.length) % TRACKS.length;
-    const t = TRACKS[i];
+    g = (idx + TRACKS.length) % TRACKS.length;
+    const t = TRACKS[g];
     audio.src = t.src;
     $("cover").src = t.cover;
     $("title").textContent = t.title;
@@ -120,13 +212,22 @@
     if (autoplay) audio.play();
   }
 
+  // следующий / предыдущий — внутри выбранной категории
+  function step(d) {
+    const q = queue();
+    if (!q.length) return;
+    let pos = q.indexOf(g);
+    if (pos === -1) pos = d > 0 ? -1 : 0;
+    load(q[(pos + d + q.length) % q.length], true);
+  }
+
   playBtn.onclick = () => audio.paused ? audio.play() : audio.pause();
-  $("next").onclick = () => load(i + 1, true);
-  $("prev").onclick = () => load(i - 1, true);
+  $("next").onclick = () => step(1);
+  $("prev").onclick = () => step(-1);
 
   audio.onplay = () => playBtn.textContent = "⏸";
   audio.onpause = () => playBtn.textContent = "▶";
-  audio.onended = () => load(i + 1, true);
+  audio.onended = () => step(1);
   audio.onloadedmetadata = () => $("dur").textContent = fmt(audio.duration);
   audio.ontimeupdate = () => {
     if (audio.duration) seek.value = (audio.currentTime / audio.duration) * 100;
@@ -135,10 +236,19 @@
   seek.oninput = () => { if (audio.duration) audio.currentTime = (seek.value / 100) * audio.duration; };
 
   if ("mediaSession" in navigator) {
-    navigator.mediaSession.setActionHandler("nexttrack", () => load(i + 1, true));
-    navigator.mediaSession.setActionHandler("previoustrack", () => load(i - 1, true));
+    navigator.mediaSession.setActionHandler("nexttrack", () => step(1));
+    navigator.mediaSession.setActionHandler("previoustrack", () => step(-1));
   }
 
+  // свайп по списку влево/вправо — смена категории
+  let sx = 0, sy = 0;
+  $("list").addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  $("list").addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) setCat(cat + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  renderTabs();
   load(0, false);
 </script>
 </body>
