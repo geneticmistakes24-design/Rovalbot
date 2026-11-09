@@ -11,7 +11,9 @@
 <style>
   :root {
     --u: min(100vw, 480px);
-    --decor: min(calc(var(--u) * .617), 36vh);
+    --fm: clamp(8px, 2.6vw, 14px);
+    --fw: calc(var(--u) - var(--fm) * 2);
+    --decor: min(calc(var(--fw) * .596), 36vh);
     --font: "Oswald", "Bebas Neue", "Arial Narrow", sans-serif;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,19 +35,28 @@
   .b5 { left: 50%; bottom: -10%; width: 110vmin; height: 60vmin; transform: translateX(-50%); filter: blur(18px);
     background: radial-gradient(ellipse, rgba(170,120,60,.40), transparent 68%); }
 
-  /* ДЕКОР: кубики, фишки, карты */
-  .decor { position: fixed; left: 50%; bottom: 0; z-index: 1; pointer-events: none;
-    width: var(--u); height: var(--decor); transform: translateX(-50%);
-    background: url("decor-dice.jpg") center bottom / cover no-repeat;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%), linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+  /* РАМКА + ДЕКОР: кубики, фишки, карты, алмаз */
+  .frame { position: fixed; z-index: 1; pointer-events: none; overflow: hidden;
+    left: 50%; width: var(--fw); transform: translateX(-50%);
+    top: calc(env(safe-area-inset-top, 0px) + var(--fm)); bottom: calc(env(safe-area-inset-bottom, 0px) + var(--fm));
+    border-radius: calc(var(--u) * .065);
+    background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,0) 32%);
+    box-shadow: 0 0 calc(var(--u) * .05) rgba(170,80,255,.35), inset 0 0 calc(var(--u) * .08) rgba(170,80,255,.14); }
+  .frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: max(1.5px, calc(var(--u) * .005));
+    background: linear-gradient(150deg, #b86bff 0%, rgba(184,107,255,.7) 35%, rgba(232,194,122,.8) 70%, #e8c27a 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .decor { position: absolute; left: 0; right: 0; bottom: 0; height: var(--decor);
+    background: url("decor-frame.jpg") center bottom / cover no-repeat;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%), linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
     -webkit-mask-composite: source-in;
-            mask-image: linear-gradient(to bottom, transparent 0, #000 30%), linear-gradient(to right, transparent 0, #000 7%, #000 93%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 30%), linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
             mask-composite: intersect; }
 
   /* КОНТЕНТ */
   .wrap { position: relative; z-index: 2; width: var(--u); min-height: 100vh; min-height: 100dvh; margin: 0 auto;
     display: flex; flex-direction: column; align-items: center;
-    padding: calc(env(safe-area-inset-top, 0px) + var(--u) * .13) 0 calc(var(--decor) * .86 + env(safe-area-inset-bottom, 0px)); }
+    padding: calc(env(safe-area-inset-top, 0px) + var(--fm) + var(--u) * .1) 0 calc(var(--decor) * .86 + var(--fm) + env(safe-area-inset-bottom, 0px)); }
 
   .gold { background: linear-gradient(180deg, #f8e6b8 0%, #dcb56f 50%, #a07440 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -102,12 +113,12 @@
   .news svg { width: calc(var(--u) * .07); height: calc(var(--u) * .07); }
   .news span { font-size: calc(var(--u) * .055); }
 
-  @media (max-height: 620px) { .wrap { padding-top: calc(env(safe-area-inset-top, 0px) + 16px); } }
+  @media (max-height: 620px) { .wrap { padding-top: calc(env(safe-area-inset-top, 0px) + var(--fm) + 14px); } }
 </style>
 </head>
 <body>
   <div class="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="b5"></i></div>
-  <div class="decor"></div>
+  <div class="frame"><div class="decor"></div></div>
 
   <div class="wrap">
     <h1 class="gold">Ресурсы бота:</h1>
