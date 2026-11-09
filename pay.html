@@ -1,1 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BUY CLAIMER</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --u: min(100vw, 480px); --font: "Oswald", "Bebas Neue", "Arial Narrow", sans-serif; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; background: #150a20; color: #efe6f7;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
 
+  .bg { position: fixed; inset: 0; overflow: hidden; z-index: 0;
+    background: linear-gradient(180deg, #24132f 0%, #170c23 45%, #150a20 100%); }
+  .bg i { position: absolute; border-radius: 50%; display: block; }
+  .b1 { left: 38%; top: -6%; width: 48vmin; height: 36vmin; filter: blur(14px);
+    background: radial-gradient(circle, rgba(140,20,200,.55), transparent 68%); }
+  .b2 { left: -12%; top: 40%; width: 52vmin; height: 40vmin; filter: blur(16px);
+    background: radial-gradient(circle, rgba(120,18,170,.45), transparent 68%); }
+  .b3 { right: -14%; bottom: 8%; width: 46vmin; height: 46vmin; filter: blur(14px);
+    background: radial-gradient(circle, rgba(205,150,80,.30), transparent 68%); }
+
+  .wrap { position: relative; z-index: 1; width: var(--u); margin: 0 auto;
+    padding: calc(env(safe-area-inset-top, 0px) + 22px) 16px calc(env(safe-area-inset-bottom, 0px) + 34px); }
+
+  .gold { background: linear-gradient(180deg, #f8e6b8 0%, #dcb56f 50%, #a07440 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  header { text-align: center; margin-bottom: 16px; }
+  h1 { margin: 0; font-family: var(--font); font-weight: 600; font-size: clamp(30px, calc(var(--u) * .1), 44px); line-height: 1.1;
+    filter: drop-shadow(0 0 10px rgba(232,170,80,.45)) drop-shadow(0 2px 2px rgba(0,0,0,.7)); }
+  .price { display: inline-block; margin-top: 10px; padding: 4px 18px; border-radius: 999px;
+    font-family: var(--font); font-weight: 600; font-size: 26px; color: #2a1236;
+    background: linear-gradient(180deg, #f8e6b8, #d9ab62); box-shadow: 0 0 16px rgba(232,170,80,.45); }
+
+  .card { position: relative; margin-bottom: 14px; padding: 16px 16px 16px 20px; border-radius: 18px; overflow: hidden;
+    background: linear-gradient(165deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 35%, rgba(18,10,28,.65) 100%);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border: 1px solid rgba(201,112,255,.28);
+    box-shadow: 0 0 18px rgba(170,80,255,.18), 0 8px 18px rgba(0,0,0,.4); }
+  .card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, #c970ff, #e8c27a); }
+
+  h2 { margin: 0 0 8px; font-family: var(--font); font-weight: 600; font-size: 20px; color: #fff; }
+  .step { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-right: 8px;
+    border-radius: 50%; font-size: 14px; color: #2a1236; background: linear-gradient(180deg, #f8e6b8, #d9ab62); }
+  p { margin: 0 0 8px; font-size: 15px; line-height: 1.5; color: #dccfe9; }
+  p:last-child { margin-bottom: 0; }
+
+  .tabs { display: flex; gap: 8px; margin: 2px 0 12px; }
+  .tab { flex: 1; padding: 10px 6px; border-radius: 12px; cursor: pointer; text-align: center;
+    font-family: var(--font); font-weight: 600; font-size: 15px; letter-spacing: .02em; color: #f3dcae;
+    background: rgba(201,112,255,.12); border: 1px solid rgba(201,112,255,.35); transition: .15s; }
+  .tab.on { color: #2a1236; background: linear-gradient(180deg, #f8e6b8, #d9ab62); border-color: transparent; box-shadow: 0 0 12px rgba(232,170,80,.4); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+  .chip { padding: 4px 11px; border-radius: 999px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase;
+    color: #f3dcae; background: rgba(201,112,255,.22); border: 1px solid rgba(201,112,255,.4); }
+
+  .addr { display: block; width: 100%; padding: 12px; border-radius: 12px; word-break: break-all;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; line-height: 1.4; color: #fff;
+    background: rgba(0,0,0,.35); border: 1px dashed rgba(232,194,122,.5); }
+
+  .btn { display: block; width: 100%; margin-top: 12px; padding: 13px 16px; border: 0; border-radius: 14px; cursor: pointer;
+    font-family: var(--font); font-weight: 600; font-size: 17px; letter-spacing: .03em; color: #2a1236; text-align: center;
+    background: linear-gradient(180deg, #f8e6b8, #d9ab62); box-shadow: 0 0 14px rgba(232,170,80,.35); transition: transform .12s, filter .12s, opacity .12s; }
+  .btn:active { transform: scale(.97); filter: brightness(1.12); }
+  .btn.ghost { color: #f3dcae; background: rgba(201,112,255,.18); border: 1px solid rgba(201,112,255,.5); box-shadow: none; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; filter: grayscale(.4); }
+
+  input { width: 100%; padding: 13px 12px; border-radius: 12px; font-size: 15px; color: #fff;
+    background: rgba(0,0,0,.35); border: 1px solid rgba(201,112,255,.45); outline: none; }
+  input:focus { border-color: #e8c27a; box-shadow: 0 0 10px rgba(232,170,80,.35); }
+  input::placeholder { color: #8f7aa8; }
+  .err { min-height: 18px; margin-top: 6px; font-size: 13px; color: #ff9fb0; }
+
+  .note { margin-top: 6px; text-align: center; font-size: 12px; line-height: 1.5; color: #8f7aa8; }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 28px); transform: translate(-50%, 20px);
+    padding: 10px 18px; border-radius: 999px; font-size: 14px; color: #2a1236; background: #f3dcae;
+    opacity: 0; pointer-events: none; transition: .25s; z-index: 5; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+  <div class="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+
+  <div class="wrap">
+    <header>
+      <h1 class="gold">BUY CLAIMER</h1>
+      <div class="price" id="price">$30</div>
+    </header>
+
+    <div class="card">
+      <h2>Что ты получаешь</h2>
+      <p>Android-приложение (APK): рамка накладывается на область экрана, а распознанный текст автоматически копируется.</p>
+      <p>Файл приложения и инструкцию по установке и настройке выдаёт админ после проверки оплаты.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="step">1</span>Отправь оплату</h2>
+      <div class="tabs">
+        <div class="tab on" id="tab-tron" role="button" tabindex="0">USDT · TRON</div>
+        <div class="tab" id="tab-ton" role="button" tabindex="0">TON</div>
+      </div>
+      <div class="chips"><span class="chip" id="amount"></span><span class="chip" id="network"></span></div>
+      <div class="addr" id="addr"></div>
+      <button class="btn ghost" id="copy">Скопировать адрес</button>
+      <p id="hint" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card">
+      <h2><span class="step">2</span>Вставь хеш транзакции</h2>
+      <input id="hash" type="text" placeholder="Хеш (TX hash) твоей транзакции" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="err" id="err"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="step">3</span>Получи приложение</h2>
+      <p>Нажми кнопку ниже: откроется чат с админом <b>@RovelAdmin</b>, в сообщение подставится хеш. <b>Для получения APK и инструкций нужно написать туда.</b></p>
+      <button class="btn" id="go" disabled>Я оплатил, написать @RovelAdmin</button>
+    </div>
+
+    <div class="note">Оплата проверяется администратором вручную.</div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+  // ==== НАСТРОЙКИ (поменяй под себя) ====
+  const ADMIN = "RovelAdmin";
+  const METHODS = {
+    tron: {
+      label: "USDT (TRC20)",
+      wallet: "TCXbdmwhDGJ4Bo4ZLWUyUwVcQNjnsbyTqd",
+      amount: "30 USDT",
+      network: "Сеть: TRON (TRC20)",
+      hint: "Отправляй ровно 30 USDT только в сети TRON (TRC20). Токены в других сетях на этот адрес не дойдут. Перед отправкой сверь адрес."
+    },
+    ton: {
+      label: "TON",
+      wallet: "UQCvHTA266NEcisEOFaKQgbbKnwERSRr-JziyMZbbz2lKfx0",
+      amount: "$30 в TON",
+      network: "Сеть: TON",
+      hint: "Отправляй в сети TON сумму, равную 30 долларам по текущему курсу (или 30 USDT в сети TON). Перед отправкой сверь адрес."
+    }
+  };
+  // ======================================
+
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    tg.ready(); tg.expand();
+    tg.setHeaderColor("#1c0f2a"); tg.setBackgroundColor("#150a20");
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => { location.href = "index.html"; });
+  }
+
+  const $ = id => document.getElementById(id);
+  let current = "tron";
+
+  function select(key) {
+    current = key;
+    const m = METHODS[key];
+    $("addr").textContent = m.wallet;
+    $("amount").textContent = m.amount;
+    $("network").textContent = m.network;
+    $("hint").textContent = m.hint;
+    $("tab-tron").classList.toggle("on", key === "tron");
+    $("tab-ton").classList.toggle("on", key === "ton");
+  }
+  ["tron", "ton"].forEach(k => {
+    const el = $("tab-" + k);
+    const pick = () => { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); select(k); };
+    el.addEventListener("click", pick);
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
+  select("tron");
+
+  function toast(t) {
+    const el = $("toast"); el.textContent = t; el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(() => fallback(text));
+    }
+    return Promise.resolve(fallback(text));
+  }
+  function fallback(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  $("copy").addEventListener("click", () => {
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+    copyText(METHODS[current].wallet).then(() => toast("Адрес скопирован"));
+  });
+
+  const hashEl = $("hash"), go = $("go"), err = $("err");
+  const cleanHash = () => hashEl.value.replace(/\s+/g, "");
+  const validHash = h => /^[A-Za-z0-9_\-=+\/]{20,}$/.test(h);
+
+  hashEl.addEventListener("input", () => {
+    const h = cleanHash();
+    go.disabled = !validHash(h);
+    err.textContent = (h && !validHash(h)) ? "Хеш выглядит неполным: проверь, что скопировал его целиком." : "";
+  });
+
+  go.addEventListener("click", () => {
+    const h = cleanHash();
+    if (!validHash(h)) return;
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+    const m = METHODS[current];
+    const msg = "Оплатил BUY CLAIMER (" + m.amount + ", " + m.network.replace("Сеть: ", "") + "). Хеш транзакции: " + h;
+    copyText(msg);
+    const url = "https://t.me/" + ADMIN + "?text=" + encodeURIComponent(msg);
+    if (tg) tg.openTelegramLink(url); else window.open(url, "_blank");
+    toast("Сообщение скопировано, на случай если не подставилось");
+  });
+</script>
+</body>
+</html>
