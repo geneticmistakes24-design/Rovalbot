@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invest · Rovel Community</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--u:min(100vw,480px);--font:"Oswald","Bebas Neue","Arial Narrow",sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#150a20;color:#efe6f7;font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;background:linear-gradient(180deg,#24132f 0%,#170c23 45%,#150a20 100%)}
+.bg i{position:absolute;border-radius:50%;display:block}.b1{left:38%;top:-6%;width:48vmin;height:36vmin;filter:blur(14px);background:radial-gradient(circle,rgba(140,20,200,.55),transparent 68%)}.b2{left:-12%;top:40%;width:52vmin;height:40vmin;filter:blur(16px);background:radial-gradient(circle,rgba(120,18,170,.45),transparent 68%)}.b3{right:-14%;bottom:8%;width:46vmin;height:46vmin;filter:blur(14px);background:radial-gradient(circle,rgba(205,150,80,.3),transparent 68%)}
+.wrap{position:relative;z-index:1;width:var(--u);margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 22px) 16px calc(env(safe-area-inset-bottom,0px) + 34px)}
+.gold{background:linear-gradient(180deg,#f8e6b8 0%,#dcb56f 50%,#a07440 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+header{text-align:center;margin-bottom:16px}h1{margin:0;font-family:var(--font);font-weight:600;font-size:clamp(30px,calc(var(--u)*.1),44px);line-height:1.1;filter:drop-shadow(0 0 10px rgba(232,170,80,.45)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.rate{display:inline-block;margin-top:10px;padding:5px 18px;border-radius:999px;font-family:var(--font);font-weight:600;font-size:23px;color:#2a1236;background:linear-gradient(180deg,#f8e6b8,#d9ab62);box-shadow:0 0 16px rgba(232,170,80,.45)}
+.sub{margin-top:7px;color:#c8b5d8;font-size:13px;letter-spacing:.04em}
+.card{position:relative;margin-bottom:14px;padding:16px 16px 16px 20px;border-radius:18px;overflow:hidden;background:linear-gradient(165deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.03) 35%,rgba(18,10,28,.65) 100%);backdrop-filter:blur(8px);border:1px solid rgba(201,112,255,.28);box-shadow:0 0 18px rgba(170,80,255,.18),0 8px 18px rgba(0,0,0,.4)}
+.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#c970ff,#e8c27a)}
+h2{margin:0 0 9px;font-family:var(--font);font-weight:600;font-size:20px;color:#fff}p{margin:0 0 8px;font-size:14px;line-height:1.5;color:#dccfe9}p:last-child{margin-bottom:0}
+.tabs{display:flex;gap:8px;margin:2px 0 12px}.tab{flex:1;padding:10px 6px;border-radius:12px;cursor:pointer;text-align:center;font-family:var(--font);font-weight:600;font-size:15px;color:#f3dcae;background:rgba(201,112,255,.12);border:1px solid rgba(201,112,255,.35)}.tab.on{color:#2a1236;background:linear-gradient(180deg,#f8e6b8,#d9ab62);border-color:transparent;box-shadow:0 0 12px rgba(232,170,80,.4)}
+label{display:block;margin:10px 0 6px;color:#cdb8dd;font-size:13px}input{width:100%;padding:13px 12px;border-radius:12px;font-size:15px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(201,112,255,.45);outline:none}input:focus{border-color:#e8c27a;box-shadow:0 0 10px rgba(232,170,80,.35)}input::placeholder{color:#8f7aa8}
+.addr{display:block;width:100%;padding:12px;border-radius:12px;word-break:break-all;font-family:ui-monospace,monospace;font-size:12px;line-height:1.45;color:#fff;background:rgba(0,0,0,.35);border:1px dashed rgba(232,194,122,.5)}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.metric{padding:11px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(201,112,255,.2)}.metric small{display:block;color:#a995ba;font-size:11px}.metric strong{display:block;margin-top:3px;color:#f5dfb0;font-family:var(--font);font-size:20px;overflow-wrap:anywhere}
+.btn{display:block;width:100%;margin-top:12px;padding:13px 16px;border:0;border-radius:14px;cursor:pointer;font-family:var(--font);font-weight:600;font-size:17px;letter-spacing:.03em;color:#2a1236;text-align:center;background:linear-gradient(180deg,#f8e6b8,#d9ab62);box-shadow:0 0 14px rgba(232,170,80,.35);transition:transform .12s,filter .12s,opacity .12s}.btn:active{transform:scale(.97);filter:brightness(1.12)}.btn.ghost{color:#f3dcae;background:rgba(201,112,255,.18);border:1px solid rgba(201,112,255,.5);box-shadow:none}.btn:disabled{opacity:.4;cursor:not-allowed}
+.note{margin-top:7px;text-align:center;font-size:11px;line-height:1.5;color:#9a86ac}.warn{padding:10px 12px;border-radius:12px;background:rgba(232,194,122,.08);border:1px solid rgba(232,194,122,.25);color:#d9c9e6;font-size:12px;line-height:1.5}.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);padding:10px 18px;border-radius:999px;font-size:14px;color:#2a1236;background:#f3dcae;opacity:0;pointer-events:none;transition:.25s;z-index:5;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+<div class="wrap">
+<header><h1 class="gold">TIER 1 CASINO</h1><div class="rate">0.1% PER DAY · 7 DAYS</div><div class="sub">SHUFFLE COMMUNITY · INVEST</div></header>
+<div class="card"><h2>Investment calculator</h2><p>Enter the amount you intend to send. The estimate below uses simple interest for 7 days.</p>
+<label for="amount">Deposit amount</label><input id="amount" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="Enter amount">
+<div class="summary"><div class="metric"><small>Daily estimate · 0.1%</small><strong id="daily">—</strong></div><div class="metric"><small>7-day estimate · 0.7%</small><strong id="profit">—</strong></div><div class="metric" style="grid-column:1/-1"><small>Estimated total after 7 days</small><strong id="total">—</strong></div></div>
+</div>
+<div class="card"><h2>1 · Select payment network</h2><div class="tabs"><button class="tab on" id="tab-tron" type="button">USDT · TRC20</button><button class="tab" id="tab-ton" type="button">TON</button></div>
+<div class="warn" id="networkNote"></div><label>Payment address</label><div class="addr" id="wallet"></div><button class="btn ghost" id="copy" type="button">COPY WALLET ADDRESS</button></div>
+<div class="card"><h2>2 · Send payment details</h2><p>After sending funds, enter the transaction hash (TXID). Your request will be sent to the administrator for manual review. Your account is not credited automatically.</p>
+<label for="tx">Transaction hash / TXID</label><input id="tx" type="text" placeholder="Paste transaction hash" autocomplete="off" autocapitalize="off" spellcheck="false">
+<button class="btn" id="submit" type="button">I HAVE PAID · SEND REQUEST</button><div class="note" id="validation">Manual verification by @RovelAdmin</div></div>
+<div class="warn">Important: 0.1% per day is an indicated estimate, not a guaranteed return. Crypto transfers are generally irreversible. Check the selected network and address before sending. Only send funds if you understand the risks and have reviewed the applicable terms.</div>
+<div class="note" style="margin-top:14px"><button class="btn ghost" type="button" onclick="location.href='index.html'">BACK TO MENU</button></div>
+</div><div class="toast" id="toast"></div>
+<script>
+// Payment destinations and admin contact. Keep these values accurate.
+const ADMIN = 'RovelAdmin';
+const METHODS = {
+  tron: { label:'USDT (TRC20)', currency:'USDT', wallet:'TSUNZqVrdKUdZgn8QRrDVkFaKvgeCUVhts', network:'TRON · TRC20', note:'Send USDT only on the TRON (TRC20) network. Do not send TON or tokens on another network to this address.' },
+  ton: { label:'TON', currency:'TON', wallet:'UQCvHTA266NEcisEOFaKQgbbKnwERSRr-JziyMZbbz2lKfx0', network:'TON', note:'Send native TON on the TON network only. Do not send USDT or assets on another network to this address.' }
+};
+const tg = window.Telegram && window.Telegram.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor('#1c0f2a');tg.setBackgroundColor('#150a20');if(tg.BackButton){tg.BackButton.show();tg.BackButton.onClick(()=>location.href='index.html')}}
+const $=id=>document.getElementById(id);let current='tron';
+function select(key){current=key;const m=METHODS[key];$('wallet').textContent=m.wallet;$('networkNote').textContent=m.note;$('tab-tron').classList.toggle('on',key==='tron');$('tab-ton').classList.toggle('on',key==='ton');calculate()}
+$('tab-tron').addEventListener('click',()=>select('tron'));$('tab-ton').addEventListener('click',()=>select('ton'));
+function fmt(n){if(!Number.isFinite(n))return '—';return n.toLocaleString('en-US',{maximumFractionDigits:8})+' '+METHODS[current].currency}
+function calculate(){const n=Number($('amount').value);if(!(n>0)){['daily','profit','total'].forEach(id=>$(id).textContent='—');return}$('daily').textContent=fmt(n*.001);$('profit').textContent=fmt(n*.007);$('total').textContent=fmt(n*1.007)}
+$('amount').addEventListener('input',calculate);select('tron');
+function toast(s){const e=$('toast');e.textContent=s;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1900)}
+function fallbackCopy(s){const t=document.createElement('textarea');t.value=s;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}
+function copyText(s){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(s).catch(()=>fallbackCopy(s));fallbackCopy(s);return Promise.resolve()}
+$('copy').addEventListener('click',()=>{copyText(METHODS[current].wallet).then(()=>toast('Wallet address copied'))});
+$('submit').addEventListener('click',()=>{const amount=Number($('amount').value);const tx=$('tx').value.trim().replace(/\s+/g,'');if(!(amount>0)||!Number.isFinite(amount)){toast('Enter a valid amount');$('amount').focus();return}if(!/^[A-Za-z0-9_\-=+/]{20,}$/.test(tx)){toast('Check the transaction hash');$('tx').focus();return}const m=METHODS[current];const msg=['INVEST PAYMENT REQUEST','Network: '+m.network,'Asset: '+m.currency,'Amount: '+amount+' '+m.currency,'Wallet: '+m.wallet,'TXID: '+tx,'Rate shown: 0.1% per day for 7 days','Status: pending manual verification'].join('\n');copyText(msg);const url='https://t.me/'+ADMIN+'?text='+encodeURIComponent(msg);if(tg)tg.openTelegramLink(url);else window.open(url,'_blank','noopener');toast('Request prepared for admin review')});
+</script>
+</body>
+</html>
