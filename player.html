@@ -7,75 +7,96 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; background: #0b0b12; color: #fff;
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0b12; color: #fff;
     font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
 
+  /* ===== ФОН: видео на весь экран, почти без затемнения ===== */
   .bg { position: fixed; inset: 0; z-index: -2;
     background: radial-gradient(circle at 20% 10%, #3b1d6e 0%, transparent 50%),
                 radial-gradient(circle at 80% 90%, #0e4f6b 0%, transparent 50%), #0b0b12; }
   video.bg-video { position: fixed; inset: 0; width: 100%; height: 100%;
     object-fit: cover; z-index: -2; }
-  /* затемнение сделано слабее, чтобы видео было лучше видно */
-  .shade { position: fixed; inset: 0; z-index: -1; background: rgba(5,5,12,.22); }
+  .shade { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(to top, rgba(5,5,12,.55) 0%, rgba(5,5,12,0) 28%); }
 
-  .wrap { min-height: 100%; max-width: 440px; margin: 0 auto;
-    padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 30px; }
-
-  /* ===== КОМПАКТНЫЙ ПЛЕЕР ===== */
-  .player { padding: 12px; border-radius: 22px;
-    background: rgba(12,8,28,.45); border: 1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 10px 40px rgba(0,0,0,.35); }
-  .now { display: flex; align-items: center; gap: 14px; }
-  .cover { width: 84px; height: 84px; flex: 0 0 84px; border-radius: 16px; object-fit: cover;
-    background: rgba(255,255,255,.08); box-shadow: 0 8px 24px rgba(0,0,0,.5);
-    border: 1px solid rgba(255,255,255,.15); }
-  .meta { min-width: 0; }
-  .title { font-size: 18px; font-weight: 700; margin: 0 0 3px;
+  /* ===== НИЖНЯЯ ПЛАШКА ПЛЕЕРА ===== */
+  .player { position: fixed; left: 12px; right: 12px; z-index: 5;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    max-width: 440px; margin: 0 auto; padding: 10px 12px 8px; border-radius: 22px;
+    background: rgba(12,8,28,.5); border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.4); }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .cover { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 12px; object-fit: cover;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); }
+  .meta { min-width: 0; flex: 1; }
+  .title { font-size: 15px; font-weight: 700; margin: 0 0 2px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .artist { font-size: 13px; opacity: .65; margin: 0; }
+  .artist { font-size: 12px; opacity: .65; margin: 0; }
 
-  .seekrow { margin-top: 12px; }
-  input[type=range] { width: 100%; accent-color: #a78bfa; margin: 0; }
-  .times { display: flex; justify-content: space-between; font-size: 11px; opacity: .6; margin-top: 2px; }
+  .controls { display: flex; align-items: center; gap: 8px; }
+  .cbtn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08); color: #fff; font-size: 14px; cursor: pointer; transition: transform .15s; }
+  .cbtn:active { transform: scale(.9); }
+  .cbtn.play { width: 46px; height: 46px; font-size: 18px; border: none;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 6px 20px rgba(139,92,246,.5); }
 
-  .controls { display: flex; align-items: center; justify-content: center; gap: 22px; margin: 8px 0 2px; }
-  .cbtn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.08); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    color: #fff; font-size: 17px; cursor: pointer; transition: transform .15s; }
-  .cbtn:active { transform: scale(.92); }
-  .cbtn.play { width: 60px; height: 60px; font-size: 24px; border: none;
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 8px 26px rgba(139,92,246,.5); }
+  .seekrow { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .seekrow span { font-size: 11px; opacity: .6; min-width: 30px; text-align: center; }
+  input[type=range] { flex: 1; width: 100%; accent-color: #a78bfa; margin: 0; }
 
-  /* ===== КНОПКИ-КАТЕГОРИИ (листаются вбок) ===== */
-  .sectionTitle { font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
-    opacity: .7; margin: 20px 4px 8px; }
-  .tabs { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
-    padding: 4px 2px 12px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
-    scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { flex: 0 0 auto; scroll-snap-align: center; display: flex; align-items: center; gap: 9px;
-    padding: 13px 18px; border-radius: 18px; color: #fff; font: inherit; font-size: 14px; font-weight: 600;
-    white-space: nowrap; cursor: pointer;
-    border: 1px solid rgba(255,255,255,.16);
-    background: rgba(255,255,255,.07);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  /* ===== КНОПКА-ЯЗЫЧОК ДЛЯ БОКОВОГО ВИДЖЕТА ===== */
+  .handle { position: fixed; right: 0; top: 38%; z-index: 6; width: 38px; padding: 16px 0;
+    border-radius: 16px 0 0 16px; border: 1px solid rgba(250,204,21,.55); border-right: none;
+    background: linear-gradient(180deg, rgba(139,92,246,.85), rgba(6,182,212,.7));
+    box-shadow: 0 0 22px rgba(168,85,247,.55); color: #fff; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    transition: transform .25s, opacity .25s; }
+  .handle .ic { font-size: 17px; }
+  .handle .txt { writing-mode: vertical-rl; text-transform: uppercase; }
+  body.open .handle { transform: translateX(100%); opacity: 0; pointer-events: none; }
+
+  /* ===== БОКОВОЙ ВИДЖЕТ ===== */
+  .backdrop { position: fixed; inset: 0; z-index: 7; background: rgba(0,0,0,.35);
+    opacity: 0; pointer-events: none; transition: opacity .28s; }
+  body.open .backdrop { opacity: 1; pointer-events: auto; }
+
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 8; width: min(86vw, 340px);
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    display: flex; flex-direction: column;
+    background: rgba(14,9,30,.78); border-left: 1px solid rgba(250,204,21,.35);
+    backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    box-shadow: -10px 0 40px rgba(0,0,0,.5), -2px 0 24px rgba(139,92,246,.25);
+    transform: translateX(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); }
+  body.open .drawer { transform: none; }
+
+  .dhead { display: flex; align-items: center; justify-content: space-between; margin: 0 4px 10px; }
+  .dhead b { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
+  .close { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.08); color: #fff; font-size: 16px; cursor: pointer; }
+
+  /* кнопки-категории (вертикально внутри панели) */
+  .tabs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .tab { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 14px;
+    color: #fff; font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.07);
     transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; }
   .tab .ic { font-size: 18px; }
-  .tab:active { transform: scale(.96); }
+  .tab:active { transform: scale(.97); }
   .tab.active { border-color: rgba(250,204,21,.8);
     background: linear-gradient(135deg, rgba(139,92,246,.85), rgba(6,182,212,.7));
-    box-shadow: 0 0 0 1px rgba(250,204,21,.35), 0 8px 28px rgba(139,92,246,.55), 0 0 22px rgba(168,85,247,.45); }
+    box-shadow: 0 0 0 1px rgba(250,204,21,.3), 0 6px 22px rgba(139,92,246,.5); }
 
-  /* ===== СПИСОК ТРЕКОВ ===== */
-  .list { display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+  .list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+    padding-right: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .list::-webkit-scrollbar { display: none; }
   .list.slideL { animation: slideL .28s ease; }
   .list.slideR { animation: slideR .28s ease; }
-  @keyframes slideL { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
-  @keyframes slideR { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
-  .item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 14px;
-    background: rgba(12,8,28,.45); border: 1px solid rgba(255,255,255,.08);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; }
+  @keyframes slideL { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+  @keyframes slideR { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: none; } }
+  .item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 14px; flex: 0 0 auto;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); cursor: pointer; }
   .item.active { background: rgba(139,92,246,.4); border-color: rgba(250,204,21,.5); }
   .item img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
   .item b { display: block; font-size: 14px; }
@@ -89,32 +110,37 @@
          onerror="this.remove()"></video>
   <div class="shade"></div>
 
-  <div class="wrap">
-    <div class="player">
-      <div class="now">
-        <img id="cover" class="cover" alt="">
-        <div class="meta">
-          <div id="title" class="title"></div>
-          <div id="artist" class="artist"></div>
-        </div>
+  <!-- плеер -->
+  <div class="player">
+    <div class="row">
+      <img id="cover" class="cover" alt="">
+      <div class="meta">
+        <div id="title" class="title"></div>
+        <div id="artist" class="artist"></div>
       </div>
-
-      <div class="seekrow">
-        <input id="seek" type="range" min="0" max="100" value="0" step="0.1">
-        <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
-      </div>
-
       <div class="controls">
         <button class="cbtn" id="prev">⏮</button>
         <button class="cbtn play" id="play">▶</button>
         <button class="cbtn" id="next">⏭</button>
       </div>
     </div>
+    <div class="seekrow">
+      <span id="cur">0:00</span>
+      <input id="seek" type="range" min="0" max="100" value="0" step="0.1">
+      <span id="dur">0:00</span>
+    </div>
+  </div>
 
-    <div class="sectionTitle">Плейлисты</div>
+  <!-- язычок справа -->
+  <button class="handle" id="handle"><span class="ic">🎵</span><span class="txt">Плейлист</span></button>
+
+  <!-- боковой виджет -->
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="drawer" id="drawer">
+    <div class="dhead"><b>Плейлисты</b><button class="close" id="close">✕</button></div>
     <div class="tabs" id="tabs"></div>
     <div class="list" id="list"></div>
-  </div>
+  </aside>
 
   <audio id="audio" preload="metadata"></audio>
 
@@ -129,8 +155,7 @@
   const ALL = ["kayf", "sad", "new", "psy"];
 
   // === ТВОИ ТРЕКИ ===
-  // cats — в каких категориях трек показывается. Оставь нужные из: "kayf", "sad", "new", "psy"
-  // Сейчас все треки стоят во всех категориях — просто убери лишнее.
+  // cats — в каких категориях трек показывается: "kayf", "sad", "new", "psy"
   const TRACKS = [
     { title: "Brutal City", artist: "Deep", src: "music/brutalcitydeep.mp3", cover: "covers/brutalcitydeep.jpg", cats: ALL },
     { title: "Stronghold", artist: "Deep", src: "music/strongholddeep.mp3", cover: "covers/strongholddeep.jpg", cats: ALL },
@@ -143,18 +168,45 @@
   tg.ready(); tg.expand();
   tg.setHeaderColor("#0b0b12"); tg.setBackgroundColor("#0b0b12");
   tg.BackButton.show();
-  tg.BackButton.onClick(() => { location.href = "index.html"; });
+  tg.BackButton.onClick(() => {
+    if (document.body.classList.contains("open")) setDrawer(false);
+    else location.href = "index.html";
+  });
 
   const $ = id => document.getElementById(id);
   const audio = $("audio"), seek = $("seek"), playBtn = $("play");
-  let g = 0;      // индекс играющего трека в TRACKS
-  let cat = 0;    // выбранная категория
+  let g = 0;     // играющий трек (индекс в TRACKS)
+  let cat = 0;   // выбранная категория
 
   const fmt = s => isNaN(s) ? "0:00" : Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
-
-  // индексы треков текущей категории
   const queue = () => TRACKS.map((t, idx) => idx).filter(idx => TRACKS[idx].cats.includes(CATS[cat].id));
 
+  // --- боковая панель ---
+  function setDrawer(open) { document.body.classList.toggle("open", open); }
+  $("handle").onclick = () => setDrawer(true);
+  $("close").onclick = () => setDrawer(false);
+  $("backdrop").onclick = () => setDrawer(false);
+
+  // свайп: от правого края влево — открыть; по панели вправо — закрыть
+  let sx = 0, sy = 0, fromEdge = false;
+  document.addEventListener("touchstart", e => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    fromEdge = sx > window.innerWidth - 28;
+  }, { passive: true });
+  document.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const isOpen = document.body.classList.contains("open");
+    if (!isOpen && fromEdge && dx < 0) setDrawer(true);
+    else if (isOpen && dx > 0 && e.target.closest(".drawer") && !e.target.closest(".list")) setDrawer(false);
+  }, { passive: true });
+  // свайп по самому списку — смена категории
+  $("list").addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) setCat(cat + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // --- категории и список ---
   function renderTabs() {
     $("tabs").innerHTML = "";
     CATS.forEach((c, idx) => {
@@ -164,23 +216,19 @@
       b.onclick = () => setCat(idx);
       $("tabs").appendChild(b);
     });
-    const act = $("tabs").children[cat];
-    if (act) act.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   }
 
   function renderList(dir) {
     const list = $("list");
     list.innerHTML = "";
     const q = queue();
-    if (!q.length) {
-      list.innerHTML = '<div class="empty">Тут пока пусто 🎧</div>';
-    }
+    if (!q.length) list.innerHTML = '<div class="empty">Тут пока пусто 🎧</div>';
     q.forEach(idx => {
       const t = TRACKS[idx];
       const el = document.createElement("div");
       el.className = "item" + (idx === g ? " active" : "");
       el.innerHTML = `<img src="${t.cover}" alt=""><div><b>${t.title}</b><span>${t.artist}</span></div>`;
-      el.onclick = () => load(idx, true);
+      el.onclick = () => { load(idx, true); setDrawer(false); };
       list.appendChild(el);
     });
     list.classList.remove("slideL", "slideR");
@@ -195,6 +243,7 @@
     renderList(dir);
   }
 
+  // --- плеер ---
   function load(idx, autoplay) {
     g = (idx + TRACKS.length) % TRACKS.length;
     const t = TRACKS[g];
@@ -212,7 +261,7 @@
     if (autoplay) audio.play();
   }
 
-  // следующий / предыдущий — внутри выбранной категории
+  // вперёд / назад — внутри выбранной категории
   function step(d) {
     const q = queue();
     if (!q.length) return;
@@ -239,14 +288,6 @@
     navigator.mediaSession.setActionHandler("nexttrack", () => step(1));
     navigator.mediaSession.setActionHandler("previoustrack", () => step(-1));
   }
-
-  // свайп по списку влево/вправо — смена категории
-  let sx = 0, sy = 0;
-  $("list").addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-  $("list").addEventListener("touchend", e => {
-    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) setCat(cat + (dx < 0 ? 1 : -1));
-  }, { passive: true });
 
   renderTabs();
   load(0, false);
